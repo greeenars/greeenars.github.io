@@ -124,7 +124,6 @@ html, body {
 }
 .pet { position: relative; }
 .pet { width: min(78vw, 340px); aspect-ratio: 1; touch-action: none; }
-.pet svg { width: 100%; height: 100%; overflow: visible; }
 .effects { position: absolute; inset: 0; pointer-events: none; }
 
 .bubble {
@@ -191,43 +190,42 @@ html, body {
 }
 
 /* ---------- あいぼうの動き ---------- */
-.pet .body-group { transform-origin: 100px 180px; animation: breathe 3.2s ease-in-out infinite; }
-@keyframes breathe { 50% { transform: scale(1.025, .975); } }
+/* 絵の置き場所：正方形の枠の中で、足もとを下にそろえる */
+.pet-art { position: relative; width: 100%; height: 100%; }
+.pet-art img {
+  position: absolute; left: 50%; bottom: 0;
+  transform-origin: 50% 100%;
+  translate: -50% 0;          /* 中央寄せ（アニメーションの transform とぶつからないよう translate を使う） */
+  -webkit-user-drag: none;
+  pointer-events: none;       /* 触った判定は外側の枠でとる */
+}
+.pet .body-group { animation: breathe 3.2s ease-in-out infinite; }
+@keyframes breathe { 50% { transform: scale(1.03, .97); } }
 
-.pet.bounce .body-group { animation: bounce .55s ease-out; }
+/* タップ：ぽよんと跳ねる */
+.pet.bounce .body-group, .mini-pet.bounce .body-group { animation: bounce .6s cubic-bezier(.3,1.4,.6,1); }
 @keyframes bounce {
   0% { transform: scale(1, 1); }
-  25% { transform: scale(1.12, .85); }
-  50% { transform: translateY(-26px) scale(.94, 1.08); }
-  75% { transform: scale(1.05, .95); }
+  20% { transform: scale(1.14, .82); }
+  50% { transform: translateY(-14%) scale(.92, 1.1); }
+  75% { transform: scale(1.06, .94); }
   100% { transform: scale(1, 1); }
 }
+/* なでなで：うれしくて左右にゆらゆら */
 .pet.pet-happy .body-group { animation: wiggle .5s ease-in-out infinite; }
-@keyframes wiggle { 25% { transform: rotate(-4deg) scale(1.03, .97); } 75% { transform: rotate(4deg) scale(1.03, .97); } }
-
-.pet.eating .body-group { animation: munch .3s ease-in-out 4; }
-@keyframes munch { 50% { transform: scale(1.06, .92); } }
-
+@keyframes wiggle {
+  25% { transform: rotate(-5deg) scale(1.04, .96); }
+  75% { transform: rotate(5deg) scale(1.04, .96); }
+}
+/* たべる：もぐもぐ ぷにぷに */
+.pet.eating .body-group { animation: munch .28s ease-in-out 5; }
+@keyframes munch { 50% { transform: scale(1.07, .9); } }
+/* せいちょう：ぎゅっとちぢんで、ぽんっと大きく */
 .pet.grow .body-group { animation: grow 1.2s ease-in-out; }
 @keyframes grow {
   0% { transform: scale(1); } 30% { transform: scale(.8, 1.15); }
-  60% { transform: scale(1.25); } 100% { transform: scale(1); }
+  60% { transform: scale(1.25); filter: brightness(1.25); } 100% { transform: scale(1); }
 }
-
-/* 目と口の切り替え（ふだん／うれしい／たべる） */
-.eyes-happy, .mouth-open { display: none; }
-.pet.pet-happy .eyes-normal, .pet.eating .eyes-normal, .pet.grow .eyes-normal { display: none; }
-.pet.pet-happy .eyes-happy, .pet.eating .eyes-happy, .pet.grow .eyes-happy { display: inline; }
-.pet.eating .mouth-normal { display: none; }
-.pet.eating .mouth-open { display: inline; }
-.pet .eyes-normal { animation: blink 4.5s infinite; transform-origin: 100px 112px; }
-@keyframes blink { 0%, 95%, 100% { transform: scaleY(1); } 97% { transform: scaleY(.1); } }
-
-.pet .arm-l, .pet .arm-r { transform-box: fill-box; transform-origin: 50% 20%; }
-.pet.pet-happy .arm-l, .pet.bounce .arm-l { animation: wave-l .4s ease-in-out infinite; }
-.pet.pet-happy .arm-r, .pet.bounce .arm-r { animation: wave-r .4s ease-in-out infinite; }
-@keyframes wave-l { 50% { transform: rotate(-22deg); } }
-@keyframes wave-r { 50% { transform: rotate(22deg); } }
 
 /* ハートやきらきら */
 .fx {
@@ -243,8 +241,7 @@ html, body {
 /* ---------- せんかき ---------- */
 .level-label { flex: 1; text-align: center; font-size: 20px; font-weight: 800; }
 .mini-pet { width: 56px; height: 56px; }
-.mini-pet svg { width: 100%; height: 100%; overflow: visible; }
-.mini-pet.bounce .body-group { animation: bounce .55s ease-out; transform-origin: 100px 180px; }
+.mini-pet .pet-art { width: 100%; height: 100%; }
 .trace-bubble { top: 76px; }
 .trace-svg { flex: 1; width: 100%; touch-action: none; }
 
@@ -283,15 +280,20 @@ html, body {
 /* どうぶつ：クリーム色の紙に、うすい肉球もよう */
 #app.theme-animal, #app.theme-select {
   background-color: #FBF5E9;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cg fill='%23F2C9A0' opacity='.38'%3E%3Cellipse cx='32' cy='38' rx='8' ry='6.5'/%3E%3Ccircle cx='23' cy='27' r='3.4'/%3E%3Ccircle cx='32' cy='24' r='3.4'/%3E%3Ccircle cx='41' cy='27' r='3.4'/%3E%3C/g%3E%3Cg fill='%23F2C9A0' opacity='.25' transform='rotate(25 110 110)'%3E%3Cellipse cx='110' cy='116' rx='7' ry='5.5'/%3E%3Ccircle cx='102' cy='106' r='3'/%3E%3Ccircle cx='110' cy='103' r='3'/%3E%3Ccircle cx='118' cy='106' r='3'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat, no-repeat, repeat;
+  background-position: left 6px top 64px, right 8px bottom 150px, 0 0;
+  background-size: 84px auto, 64px auto, auto;
+  background-image: url("img/deco-paw1.png"), url("img/deco-paw2.png"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cg fill='%23F2C9A0' opacity='.38'%3E%3Cellipse cx='32' cy='38' rx='8' ry='6.5'/%3E%3Ccircle cx='23' cy='27' r='3.4'/%3E%3Ccircle cx='32' cy='24' r='3.4'/%3E%3Ccircle cx='41' cy='27' r='3.4'/%3E%3C/g%3E%3Cg fill='%23F2C9A0' opacity='.25' transform='rotate(25 110 110)'%3E%3Cellipse cx='110' cy='116' rx='7' ry='5.5'/%3E%3Ccircle cx='102' cy='106' r='3'/%3E%3Ccircle cx='110' cy='103' r='3'/%3E%3Ccircle cx='118' cy='106' r='3'/%3E%3C/g%3E%3C/svg%3E");
 }
 #app.theme-animal .ground { background: #F3E6CF; }
 
 /* くるま：空と雲、足もとは砂地 */
 #app.theme-car {
   background-color: #E4F2FB;
-  background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='200'%3E%3Cg fill='%23fff' opacity='.9'%3E%3Cellipse cx='54' cy='46' rx='30' ry='12'/%3E%3Cellipse cx='68' cy='37' rx='17' ry='13'/%3E%3Cellipse cx='44' cy='40' rx='12' ry='9'/%3E%3Cellipse cx='176' cy='128' rx='24' ry='9'/%3E%3Cellipse cx='186' cy='121' rx='13' ry='10'/%3E%3C/g%3E%3C/svg%3E"),
+  background-repeat: no-repeat;
+  background-position: left 4% top 84px, right 4% top 34%, left 8% top 54%, 0 0;
+  background-size: 120px auto, 104px auto, 64px auto, auto;
+  background-image: url("img/deco-cloud1.png"), url("img/deco-cloud2.png"), url("img/deco-cloud3.png"),
     linear-gradient(#D6ECFA, #F3F9FD);
 }
 #app.theme-car .ground { background: #EDE0C6; }
@@ -300,7 +302,10 @@ html, body {
 /* やさい：ミント色に、うすい芽のもよう。足もとは畑の土 */
 #app.theme-veggie {
   background-color: #EEF6E6;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cg fill='%2399C98A' opacity='.35'%3E%3Cpath d='M30 50 C22 44 22 34 30 30 C38 34 38 44 30 50 Z' transform='rotate(-35 30 50)'/%3E%3Cpath d='M30 50 C22 44 22 34 30 30 C38 34 38 44 30 50 Z' transform='rotate(35 30 50)'/%3E%3Cpath d='M104 116 C98 112 98 104 104 101 C110 104 110 112 104 116 Z' transform='rotate(-30 104 116)'/%3E%3Cpath d='M104 116 C98 112 98 104 104 101 C110 104 110 112 104 116 Z' transform='rotate(30 104 116)'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat, no-repeat, repeat;
+  background-position: left 4px bottom 150px, right 6px top 30%, 0 0;
+  background-size: 80px auto, 60px auto, auto;
+  background-image: url("img/deco-leaf1.png"), url("img/deco-leaf2.png"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cg fill='%2399C98A' opacity='.35'%3E%3Cpath d='M30 50 C22 44 22 34 30 30 C38 34 38 44 30 50 Z' transform='rotate(-35 30 50)'/%3E%3Cpath d='M30 50 C22 44 22 34 30 30 C38 34 38 44 30 50 Z' transform='rotate(35 30 50)'/%3E%3Cpath d='M104 116 C98 112 98 104 104 101 C110 104 110 112 104 116 Z' transform='rotate(-30 104 116)'/%3E%3Cpath d='M104 116 C98 112 98 104 104 101 C110 104 110 112 104 116 Z' transform='rotate(30 104 116)'/%3E%3C/g%3E%3C/svg%3E");
 }
 #app.theme-veggie .ground { background: #E8D9BE; }
 
@@ -323,8 +328,8 @@ html, body {
   padding: 8px 8px 10px;
   text-align: center;
 }
-.zukan-cell svg { width: 100%; height: auto; aspect-ratio: 1; }
-.zukan-cell.locked svg { filter: brightness(0) opacity(.12); }
+.zukan-cell .pet-art { width: 100%; height: auto; aspect-ratio: 1; }
+.zukan-cell.locked img { filter: brightness(0) opacity(.12); }
 .zukan-no {
   position: absolute; left: 8px; top: 6px;
   font-size: 18px; font-weight: 800; color: #7A5236;
