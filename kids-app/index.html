@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <!-- user-scalable=no：子どもが2本指で触っても画面が拡大しないようにする -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#FFF6E8">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="あいぼう">
+  <title>あいぼうと せんかき（試作版）</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- ① あいぼうをえらぶ画面 -->
+    <section id="screen-select" class="screen">
+      <h1 class="title">あいぼうを えらんでね</h1>
+      <p class="sub">いっしょに おおきく なろう</p>
+      <div id="select-list" class="select-list"></div>
+      <p class="note">※ キャラクターは しさくようの かりの すがたです</p>
+    </section>
+
+    <!-- ② ホーム（あいぼうのお世話） -->
+    <section id="screen-home" class="screen">
+      <header class="topbar">
+        <div class="stage-box">
+          <span id="stage-label" class="stage-label">1</span>
+          <div class="gauge"><div id="gauge-fill" class="gauge-fill"></div></div>
+        </div>
+        <button id="btn-sound" class="icon-btn" aria-label="おと">🔊</button>
+      </header>
+
+      <div id="pet-area" class="pet-area">
+        <div id="bubble" class="bubble"></div>
+        <div id="pet" class="pet"></div>
+        <div id="effects" class="effects"></div>
+      </div>
+
+      <div class="tray">
+        <div class="tray-item" data-item="water">
+          <div class="tray-icon" id="icon-water"></div>
+          <span class="tray-count" id="count-water">0</span>
+        </div>
+        <div class="tray-item" data-item="food">
+          <div class="tray-icon" id="icon-food"></div>
+          <span class="tray-count" id="count-food">0</span>
+        </div>
+        <button id="btn-study" class="big-btn">せんかき</button>
+      </div>
+      <div id="drag-hint" class="drag-hint hidden">👆 ひっぱって あげてね</div>
+    </section>
+
+    <!-- ③ せんかき（運筆）画面 -->
+    <section id="screen-trace" class="screen">
+      <header class="topbar">
+        <button id="btn-back" class="icon-btn" aria-label="もどる">←</button>
+        <span id="level-label" class="level-label"></span>
+        <div id="mini-pet" class="mini-pet"></div>
+      </header>
+      <div id="trace-bubble" class="bubble trace-bubble"></div>
+      <svg id="trace-svg" class="trace-svg" viewBox="0 0 360 480"></svg>
+    </section>
+
+    <!-- ④ ごほうび・成長などのお知らせ -->
+    <div id="modal" class="modal hidden">
+      <div class="modal-card">
+        <div id="modal-art" class="modal-art"></div>
+        <p id="modal-text" class="modal-text"></p>
+        <button id="modal-btn" class="big-btn"></button>
+      </div>
+    </div>
+
+    <!-- 保護者向け：長押しでリセット -->
+    <button id="btn-reset" class="reset-btn" aria-label="保護者メニュー">⚙︎</button>
+  </div>
+
+  <script src="characters.js"></script>
+  <script src="levels.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
