@@ -1,7 +1,8 @@
 /* =========================================================
    あいぼうと せんかき（試作版）スタイル
    - スマホ縦画面を基準に作っています
-   - 色はやさしい暖色。本デザイン確定後に差し替え予定
+   - 世界観は添付資料「ゆるキャラ進化図鑑」に合わせています
+     （どうぶつ＝クリーム色と肉球、くるま＝空と雲と砂地、やさい＝ミント色と芽）
    ========================================================= */
 :root {
   --bg: #FFF6E8;
@@ -34,6 +35,7 @@ html, body {
 
 #app {
   position: relative;
+  background-color: #FBF5E9;
   max-width: 480px;
   height: 100%;
   margin: 0 auto;
@@ -51,7 +53,10 @@ html, body {
 .hidden { display: none !important; }
 
 /* ---------- 共通パーツ ---------- */
-.title { font-size: 26px; font-weight: 800; text-align: center; margin: 24px 0 4px; }
+.title { font-size: 28px; font-weight: 800; text-align: center; margin: 24px 0 4px; letter-spacing: .02em; }
+.title .t1 { color: #7A5236; }
+.title .t2 { color: #EF8B6A; }
+.topbar-spacer { width: 52px; }
 .sub { text-align: center; margin: 0 0 16px; color: var(--ink-soft); }
 .note { text-align: center; font-size: 12px; color: var(--ink-soft); margin-top: auto; }
 
@@ -111,7 +116,13 @@ html, body {
 .gauge { flex: 1; height: 18px; background: #F1E3CF; border-radius: 999px; overflow: hidden; }
 .gauge-fill { height: 100%; width: 0; background: linear-gradient(90deg, #FFC98B, var(--accent)); border-radius: 999px; transition: width .6s; }
 
-.pet-area { position: relative; flex: 1; display: grid; place-items: center; touch-action: none; }
+.pet-area { position: relative; flex: 1; display: grid; place-items: end center; padding-bottom: 18px; touch-action: none; }
+.ground {
+  position: absolute; left: -16px; right: -16px; bottom: 0; height: 64px;
+  border-radius: 50% 50% 0 0 / 22px 22px 0 0;
+  background: #F3E6CF;
+}
+.pet { position: relative; }
 .pet { width: min(78vw, 340px); aspect-ratio: 1; touch-action: none; }
 .pet svg { width: 100%; height: 100%; overflow: visible; }
 .effects { position: absolute; inset: 0; pointer-events: none; }
@@ -122,8 +133,12 @@ html, body {
   background: var(--card);
   padding: 10px 18px;
   border-radius: 20px;
-  font-size: 18px; font-weight: 800;
-  white-space: nowrap;
+  font-size: 17px; font-weight: 800;
+  line-height: 1.45;
+  text-align: center;
+  width: max-content;
+  max-width: 88%;
+  border: 2px solid #EADBC6;
   opacity: 0;
   transition: opacity .2s, transform .2s;
   box-shadow: 0 3px 0 rgba(90, 70, 54, .12);
@@ -131,6 +146,12 @@ html, body {
   pointer-events: none;
 }
 .bubble.show { opacity: 1; transform: translateX(-50%) scale(1); }
+.bubble::after {
+  content: ""; position: absolute; left: 50%; bottom: -9px;
+  width: 14px; height: 14px; background: var(--card);
+  border-right: 2px solid #EADBC6; border-bottom: 2px solid #EADBC6;
+  transform: translateX(-50%) rotate(45deg);
+}
 
 .tray { display: flex; align-items: center; gap: 12px; }
 .tray-item {
@@ -202,8 +223,7 @@ html, body {
 .pet .eyes-normal { animation: blink 4.5s infinite; transform-origin: 100px 112px; }
 @keyframes blink { 0%, 95%, 100% { transform: scaleY(1); } 97% { transform: scaleY(.1); } }
 
-.pet .arm-l { transform-origin: 46px 140px; }
-.pet .arm-r { transform-origin: 154px 140px; }
+.pet .arm-l, .pet .arm-r { transform-box: fill-box; transform-origin: 50% 20%; }
 .pet.pet-happy .arm-l, .pet.bounce .arm-l { animation: wave-l .4s ease-in-out infinite; }
 .pet.pet-happy .arm-r, .pet.bounce .arm-r { animation: wave-r .4s ease-in-out infinite; }
 @keyframes wave-l { 50% { transform: rotate(-22deg); } }
@@ -258,3 +278,56 @@ html, body {
   border: none; background: transparent;
   color: var(--ink-soft); opacity: .35; font-size: 18px;
 }
+
+/* ---------- 世界観（テーマ）---------- */
+/* どうぶつ：クリーム色の紙に、うすい肉球もよう */
+#app.theme-animal, #app.theme-select {
+  background-color: #FBF5E9;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cg fill='%23F2C9A0' opacity='.38'%3E%3Cellipse cx='32' cy='38' rx='8' ry='6.5'/%3E%3Ccircle cx='23' cy='27' r='3.4'/%3E%3Ccircle cx='32' cy='24' r='3.4'/%3E%3Ccircle cx='41' cy='27' r='3.4'/%3E%3C/g%3E%3Cg fill='%23F2C9A0' opacity='.25' transform='rotate(25 110 110)'%3E%3Cellipse cx='110' cy='116' rx='7' ry='5.5'/%3E%3Ccircle cx='102' cy='106' r='3'/%3E%3Ccircle cx='110' cy='103' r='3'/%3E%3Ccircle cx='118' cy='106' r='3'/%3E%3C/g%3E%3C/svg%3E");
+}
+#app.theme-animal .ground { background: #F3E6CF; }
+
+/* くるま：空と雲、足もとは砂地 */
+#app.theme-car {
+  background-color: #E4F2FB;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='200'%3E%3Cg fill='%23fff' opacity='.9'%3E%3Cellipse cx='54' cy='46' rx='30' ry='12'/%3E%3Cellipse cx='68' cy='37' rx='17' ry='13'/%3E%3Cellipse cx='44' cy='40' rx='12' ry='9'/%3E%3Cellipse cx='176' cy='128' rx='24' ry='9'/%3E%3Cellipse cx='186' cy='121' rx='13' ry='10'/%3E%3C/g%3E%3C/svg%3E"),
+    linear-gradient(#D6ECFA, #F3F9FD);
+}
+#app.theme-car .ground { background: #EDE0C6; }
+#app.theme-car .select-card, #app.theme-car .tray-item { background: #FFFFFF; }
+
+/* やさい：ミント色に、うすい芽のもよう。足もとは畑の土 */
+#app.theme-veggie {
+  background-color: #EEF6E6;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cg fill='%2399C98A' opacity='.35'%3E%3Cpath d='M30 50 C22 44 22 34 30 30 C38 34 38 44 30 50 Z' transform='rotate(-35 30 50)'/%3E%3Cpath d='M30 50 C22 44 22 34 30 30 C38 34 38 44 30 50 Z' transform='rotate(35 30 50)'/%3E%3Cpath d='M104 116 C98 112 98 104 104 101 C110 104 110 112 104 116 Z' transform='rotate(-30 104 116)'/%3E%3Cpath d='M104 116 C98 112 98 104 104 101 C110 104 110 112 104 116 Z' transform='rotate(30 104 116)'/%3E%3C/g%3E%3C/svg%3E");
+}
+#app.theme-veggie .ground { background: #E8D9BE; }
+
+/* あいぼう選択カードは、それぞれの世界の色 */
+.select-card[data-type="animal"] { background: #FFFBF3; }
+.select-card[data-type="car"] { background: #F1F8FD; }
+.select-card[data-type="veggie"] { background: #F4FAEE; }
+
+/* ---------- しんか ずかん ---------- */
+.zukan-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  overflow-y: auto; padding-bottom: 16px;
+  -webkit-overflow-scrolling: touch;
+}
+.zukan-cell {
+  position: relative;
+  background: rgba(255, 255, 255, .85);
+  border: 2px solid #EADBC6;
+  border-radius: 20px;
+  padding: 8px 8px 10px;
+  text-align: center;
+}
+.zukan-cell svg { width: 100%; height: auto; aspect-ratio: 1; }
+.zukan-cell.locked svg { filter: brightness(0) opacity(.12); }
+.zukan-no {
+  position: absolute; left: 8px; top: 6px;
+  font-size: 18px; font-weight: 800; color: #7A5236;
+}
+.zukan-cell.now { border-color: var(--accent); }
+.zukan-cap { font-size: 12px; line-height: 1.4; min-height: 34px; }

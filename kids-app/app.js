@@ -94,7 +94,13 @@ function say(bubbleEl, text, force = false) {
    --------------------------------------------------------- */
 const $ = (id) => document.getElementById(id);
 
+// あいぼうの種類に合わせて、背景などの世界観を切り替える
+function applyTheme() {
+  $("app").className = state.petType ? `theme-${state.petType}` : "theme-select";
+}
+
 function showScreen(name) {
+  applyTheme();
   document.querySelectorAll(".screen").forEach((s) => s.classList.remove("active"));
   $(`screen-${name}`).classList.add("active");
 }
@@ -123,11 +129,12 @@ function renderSelect() {
     const done = state.graduated.filter((g) => g === type).length;
     const btn = document.createElement("button");
     btn.className = "select-card";
+    btn.dataset.type = type;
     btn.innerHTML = `
-      <div class="pet-thumb">${makePetSVG(type, 1, true)}</div>
+      <div class="pet-thumb">${makePetSVG(type, 3, true)}</div>
       <div>
         <div class="name">${t.name}</div>
-        <div class="desc">${t.desc}</div>
+        <div class="desc">${t.desc}（${t.kind}）</div>
       </div>
       ${done ? `<span class="done-badge">ずかん ${done}</span>` : ""}`;
     btn.onclick = () => {
@@ -313,7 +320,7 @@ function levelUp() {
     setTimeout(() => {
       showModal(
         `<div class="big-pet">${makePetSVG(state.petType, MAX_STAGE)}</div>`,
-        `${t.name} が<br>りっぱに なったよ！<br>ずかんに とうろくしたよ`,
+        `${t.stages[MAX_STAGE - 1]}<br>ずかんが ぜんぶ そろったよ`,
         "つぎの あいぼうを えらぶ",
         () => {
           state.graduated.push(state.petType);
@@ -326,7 +333,8 @@ function levelUp() {
     return;
   }
   playAnim(petEl, "grow", 1300);
-  say($("bubble"), `おおきく なった！ ${state.stage}だん だよ`, true);
+  // 資料の進化図鑑のことばで、何が変わったかを伝える
+  say($("bubble"), `${state.stage}だん！ ${t.stages[state.stage - 1]}`, true);
   const area = $("pet-area").getBoundingClientRect();
   ["🌟", "✨", "🌟"].forEach((s, i) =>
     setTimeout(() => spawnFx(s, area.width * (0.3 + 0.2 * i), area.height * 0.4), i * 150));
@@ -340,6 +348,32 @@ $("btn-sound").onclick = () => {
 };
 
 $("btn-study").onclick = () => startTrace();
+
+/* ---------------------------------------------------------
+   しんか ずかん（10段階のすがた。まだのところはシルエット）
+   --------------------------------------------------------- */
+function renderZukan() {
+  const type = state.petType;
+  const t = PET_TYPES[type];
+  const complete = state.graduated.includes(type);
+  $("zukan-title").textContent = t.title;
+  $("zukan-catch").textContent = t.catch;
+  const grid = $("zukan-grid");
+  grid.innerHTML = "";
+  for (let s = 1; s <= MAX_STAGE; s++) {
+    const open = complete || s <= state.stage;
+    const cell = document.createElement("div");
+    cell.className = "zukan-cell" + (open ? "" : " locked") + (s === state.stage && !complete ? " now" : "");
+    cell.innerHTML = `
+      <span class="zukan-no">${s}</span>
+      ${makePetSVG(type, s, true)}
+      <div class="zukan-cap">${open ? t.stages[s - 1] : "？？？"}</div>`;
+    grid.appendChild(cell);
+  }
+  showScreen("zukan");
+}
+$("btn-zukan").onclick = () => renderZukan();
+$("btn-zukan-back").onclick = () => goHome();
 
 /* ---------------------------------------------------------
    4. せんかき画面

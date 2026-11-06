@@ -21,10 +21,10 @@
 
     <!-- ① あいぼうをえらぶ画面 -->
     <section id="screen-select" class="screen">
-      <h1 class="title">あいぼうを えらんでね</h1>
-      <p class="sub">いっしょに おおきく なろう</p>
+      <h1 class="title"><span class="t1">あいぼうを</span> <span class="t2">えらんでね</span></h1>
+      <p class="sub">まるくて ぽにょっと いっしょに そだとう！</p>
       <div id="select-list" class="select-list"></div>
-      <p class="note">※ キャラクターは しさくようの かりの すがたです</p>
+      <p class="note">※ しさくばん です</p>
     </section>
 
     <!-- ② ホーム（あいぼうのお世話） -->
@@ -34,10 +34,12 @@
           <span id="stage-label" class="stage-label">1</span>
           <div class="gauge"><div id="gauge-fill" class="gauge-fill"></div></div>
         </div>
+        <button id="btn-zukan" class="icon-btn" aria-label="ずかん">📖</button>
         <button id="btn-sound" class="icon-btn" aria-label="おと">🔊</button>
       </header>
 
       <div id="pet-area" class="pet-area">
+        <div class="ground"></div>
         <div id="bubble" class="bubble"></div>
         <div id="pet" class="pet"></div>
         <div id="effects" class="effects"></div>
@@ -68,7 +70,18 @@
       <svg id="trace-svg" class="trace-svg" viewBox="0 0 360 480"></svg>
     </section>
 
-    <!-- ④ ごほうび・成長などのお知らせ -->
+    <!-- ④ しんか ずかん -->
+    <section id="screen-zukan" class="screen">
+      <header class="topbar">
+        <button id="btn-zukan-back" class="icon-btn" aria-label="もどる">←</button>
+        <span id="zukan-title" class="level-label"></span>
+        <span class="topbar-spacer"></span>
+      </header>
+      <p id="zukan-catch" class="sub"></p>
+      <div id="zukan-grid" class="zukan-grid"></div>
+    </section>
+
+    <!-- ⑤ ごほうび・成長などのお知らせ -->
     <div id="modal" class="modal hidden">
       <div class="modal-card">
         <div id="modal-art" class="modal-art"></div>
